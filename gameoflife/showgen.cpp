@@ -33,17 +33,23 @@ int main(int argc, char ** argv)
 
 
 	int c = 0 , option_index = 0;
+	int gen = 0;
 	while ( ( c = getopt_long(argc, argv, "ag:hi:j:k:l:", 
 			long_options, &option_index)) != -1)
 	{
-	
+		switch (c)
+        {
+            case 'g':
+				gen = atoi(optarg);
+		}
 	}
 
 
+	gen = (gen > 0) ? gen : 0;
 	std::string file("test.aut");
 	
 	Gameboard::Gameboard board;
  	readFile(board, file);
- 	std::cout << board.printDimensions() << std::endl;
-
+ 	//std::cout << board.printDimensions() << std::endl;
+	board.runSimulation(gen);
 }

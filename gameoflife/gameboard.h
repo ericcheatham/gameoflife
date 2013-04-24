@@ -7,6 +7,7 @@
 #include <strings.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <math.h>
 
 //== C++ headers ==//
 #include <iostream>
@@ -25,20 +26,27 @@ class Gameboard
 	int ymax_dim ,ymin_dim; 
 	int winx_dim ,winy_dim;
 
+	int xrange, yrange;
+
+	bool ** grid; //malloc when needed;
+	bool ** output;
+	
 	public:
-		//Gameboard(int xmax, int xmin, int ymax, int ymin,  int winx, int winy);
 		Gameboard();
 		~Gameboard();
 		
 		void setGridDimensions( int xmax, int xmin, int ymax, 
 		int ymin, int winx, int winy );
 		
-		void setCellLive(int x, int y);
-		void generateGeneration();
+	
+		void setCellState(int x, int y, bool isLiving);
+		void setCellState(std::vector<std::string> &coords);
+		void runSimulation(int numGenerations);
 		std::string printDimensions();
-		//void buildLifeFromFile(const std::string& str, const std::string& delim);
+	
+	private:
+		void generateBoard(int xrange, int yrange);
+		int countAdjLiving(int px , int py);	
 };
-
-
 
 #endif

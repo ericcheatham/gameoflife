@@ -1,7 +1,11 @@
 #include "gameboard.h"
 #include "golutilities.h"
 
+
+
 using namespace std;
+
+
 std::string trim(const std::string& str, const std::string& delim = " \t")
 {
 
@@ -34,7 +38,7 @@ void readFile(Gameboard::Gameboard &g_ref , const std::string filename)
 	std::string line, temp2;
 	std::vector<std::string> line_vec;
 	std::ifstream file( filename.c_str(), ifstream::in );
-	char * split;
+	//char * split;
 	//LifeObject::LifeObject * newlife = new LifeObject;
 
 	if( file ){	
@@ -42,7 +46,9 @@ void readFile(Gameboard::Gameboard &g_ref , const std::string filename)
 		{	
 			line = line.substr(0, line.find("#"));
 			std::replace(line.begin(), line.end(), '{', ';');
-			//std::replace(line.begin(), line.end(), '}', ';');
+			std::replace(line.begin(), line.end(), '	', ' ');
+			
+		
 		
 			while(line.find(";") == std::string::npos && line.length() > 0 )
 			{
@@ -73,6 +79,8 @@ void readFile(Gameboard::Gameboard &g_ref , const std::string filename)
 	
 	int xrangemin = 0, xrangemax = 0;
 	int yrangemin = 0, yrangemax = 0;
+	std::string y, x;
+	std::vector<std::string> coordinates;
 	for(std::vector<string>::iterator iter = line_vec.begin();
 			iter != line_vec.end();
 			iter++)
@@ -104,24 +112,67 @@ void readFile(Gameboard::Gameboard &g_ref , const std::string filename)
 				
 				iter++; //next string since it should be the next thing in the vector
 				std::stringstream ss2(*iter);
-			
+				//std::stringstream ss2(*iter);
+					
 				while(ss2.str().compare("}") != 0)
+				//while(std::stringstream ws(*iter) )
 				{
+										/*
 					char * y = 0;
-					split = strtok((char *)ss2.str().c_str(), " ,:="); //FUCK IT, TO C!
+					split = strtok((char *)ss2.str().c_str(), " ,:;="); 
 					if(0 != strcasecmp(split, "y"))
 						break;
 						
-					//cout<< ss2.str() <<endl;	
-					y= split = strtok (NULL, " ,:=");
-					while ( (split = strtok (NULL, " ,:="))!= NULL)
+					cout<< ss2.str() <<endl;	
+					y= strtok (NULL, " ,:=;");
+					while ( (split = strtok (NULL, " ,:;="))!= NULL)
 					{
-						//cout<< split <<" ";
-						g_ref.setCellLive(atoi(split), atoi(y));
-						//split = strtok (NULL, " ,:=");
+						cout<<"->"<<y<<endl;
+						std::stringstream ss3;
+						ss3<< y <<' '<<split;
+						std::string newstring;
+						
+						cout<<ss3.str()<<endl;
+					
+						//coordinates.push_back(ss3.str());
+						
 					}
+					*/
+					//cout<<ss2.str()<<endl;	
+					std::string thing, thing2;
+					std::string y, x;
+					int side = 0;		
+					while(getline(ss2, thing , ':'))
+					{
+						thing.erase(std::remove_if(thing.begin(), thing.end(), (int(*)(int))isspace), thing.end());
+						if(side == 0)
+						{
+							size_t last_index = thing.find_last_not_of("-0123456789");
+							y = thing.substr(last_index + 1);
+							//cout<<y<<endl;
+							side++;
+						}
+						else
+						{
+							//cout<<thing<<endl;
+							std::stringstream ssi(thing);
+							while(getline(ssi, thing2 , ','))
+							{
+								x = thing2;
+								//cout << x << " " <<y << endl;
+								std::string push(x + " " + y);
+								//cout<<push<<endl;
+								coordinates.push_back(push);
+							}
 			
+						}
+						
+						//cout<<thing<<endl;
+					}
+					//coordinates.push_back(ss2.str());
 					iter++; //next string since it should be the next thing in the vector
+					//ss2.clear();
+					ss2.clear();
 					ss2.str(*iter);
 				}
 				
@@ -138,4 +189,5 @@ void readFile(Gameboard::Gameboard &g_ref , const std::string filename)
 	file.close(); 
 	//cout<<xrangemin<<endl;
 	g_ref.setGridDimensions( xrangemax, xrangemin, yrangemax, yrangemin,5,6);
+	g_ref.setCellState(coordinates);
 }
