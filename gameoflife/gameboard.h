@@ -33,15 +33,23 @@ class Gameboard
 	
 	public:
 		Gameboard();
+		Gameboard(int xmax_dim, int xmin_dim, int ymax_dim, int ymin_dim, 
+				int winx_dim, int winy_dim);
 		~Gameboard();
 		
 		void setGridDimensions( int xmax, int xmin, int ymax, 
-		int ymin, int winx, int winy );
+			int ymin, bool wroteX, bool wroteY, int  winx, int  winy);
+			
+		bool setGridDimensions( int xmax, int xmin, int ymax, 
+			int ymin, int winx, int winy );
 		
-	
 		void setCellState(int x, int y, bool isLiving);
 		void setCellState(std::vector<std::string> &coords);
 		void runSimulation(int numGenerations);
+		
+		void printAscii();
+		void printToFile();
+		//User debug utilities 
 		std::string printDimensions();
 	
 	private:

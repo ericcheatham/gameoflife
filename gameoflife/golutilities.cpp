@@ -79,6 +79,7 @@ void readFile(Gameboard::Gameboard &g_ref , const std::string filename)
 	
 	int xrangemin = 0, xrangemax = 0;
 	int yrangemin = 0, yrangemax = 0;
+	bool wroteXR = false, wroteYR = false;
 	std::string y, x;
 	std::vector<std::string> coordinates;
 	for(std::vector<string>::iterator iter = line_vec.begin();
@@ -98,6 +99,8 @@ void readFile(Gameboard::Gameboard &g_ref , const std::string filename)
 				
 				getline(ss,temp2, ' ');
 				xrangemax = atoi(temp2.c_str());
+				
+				wroteXR = true;
 			}
 			if(!temp2.compare("Yrange"))
 			{	
@@ -106,39 +109,17 @@ void readFile(Gameboard::Gameboard &g_ref , const std::string filename)
 				
 				getline(ss,temp2, ' ');
 				yrangemax = atoi(temp2.c_str());
+				
+				wroteYR = true;
 			}
 			else if(!temp2.compare("Initial"))
 			{
 				
 				iter++; //next string since it should be the next thing in the vector
 				std::stringstream ss2(*iter);
-				//std::stringstream ss2(*iter);
 					
 				while(ss2.str().compare("}") != 0)
-				//while(std::stringstream ws(*iter) )
-				{
-										/*
-					char * y = 0;
-					split = strtok((char *)ss2.str().c_str(), " ,:;="); 
-					if(0 != strcasecmp(split, "y"))
-						break;
-						
-					cout<< ss2.str() <<endl;	
-					y= strtok (NULL, " ,:=;");
-					while ( (split = strtok (NULL, " ,:;="))!= NULL)
-					{
-						cout<<"->"<<y<<endl;
-						std::stringstream ss3;
-						ss3<< y <<' '<<split;
-						std::string newstring;
-						
-						cout<<ss3.str()<<endl;
-					
-						//coordinates.push_back(ss3.str());
-						
-					}
-					*/
-					//cout<<ss2.str()<<endl;	
+				{	
 					std::string thing, thing2;
 					std::string y, x;
 					int side = 0;		
@@ -154,40 +135,28 @@ void readFile(Gameboard::Gameboard &g_ref , const std::string filename)
 						}
 						else
 						{
-							//cout<<thing<<endl;
 							std::stringstream ssi(thing);
 							while(getline(ssi, thing2 , ','))
 							{
 								x = thing2;
-								//cout << x << " " <<y << endl;
 								std::string push(x + " " + y);
-								//cout<<push<<endl;
 								coordinates.push_back(push);
 							}
-			
 						}
-						
-						//cout<<thing<<endl;
 					}
-					//coordinates.push_back(ss2.str());
+
 					iter++; //next string since it should be the next thing in the vector
-					//ss2.clear();
 					ss2.clear();
 					ss2.str(*iter);
-				}
-				
+				}		
 			}
 			else
 				break;
-			
-			
-		}	
-	
+		}		
 	}
 
-
 	file.close(); 
-	//cout<<xrangemin<<endl;
-	g_ref.setGridDimensions( xrangemax, xrangemin, yrangemax, yrangemin,5,6);
+	
+	g_ref.setGridDimensions( xrangemax, xrangemin, yrangemax, yrangemin, wroteXR, wroteYR, 5,6);
 	g_ref.setCellState(coordinates);
 }
