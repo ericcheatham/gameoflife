@@ -67,27 +67,18 @@ void readArg(const char * optarg, int &min, int &max)
 
 
 // ==== NCURSES ==== //
-WINDOW *draw_window(int winw, int winh, int startx, int starty)
+void updateResources(WINDOW * window, WINDOW * pad, int pminrow, int pmincol, int sminrow, int smincol, int smaxrow, int smaxcol)
 {
-	/*
-		1) Generate window of size 40 columns x 20 height
-		2) Refresh screen to draw window
-		3) Return window to manipulate elsewere
-	*/
-	WINDOW * win;
+	
+	refresh();
+	wrefresh(window);
+	prefresh(pad, pminrow,  pmincol, sminrow, smincol,  smaxrow,  smaxcol);
 
-	win = newwin(winh, winw, starty, startx);//Needed?
-	wborder(win, '|', '|', '-', '-', '+', '+', '+', '+'); 
-	//win = newwin(20, 40,0,0);
-	
-	wrefresh(win);
-	
-	return win;
 }
 
 
 
-void displayGeneration(int yrange, int xrange, const char calive,  const char cdead, bool ** grid)
+void displayGeneration(WINDOW * win, int yrange, int xrange, const char calive,  const char cdead, bool ** grid)
 {
 	char alive[2];
 	char dead[1];
@@ -100,26 +91,42 @@ void displayGeneration(int yrange, int xrange, const char calive,  const char cd
 			for(int x = 0; x < xrange; x++)
 			{
 				if(grid[y][x])
-					mvaddch(y+2, x, calive);
-					//mvprintw( y+2, x,"%s",  alive);	
+					mvwaddch(win,y+1, x+1, calive);
+					//mvaddch(y+2, x, calive);
 				else 
-					mvaddch(y+2, x, cdead);
-					//mvprintw( y+2, x, " ");
+					mvwaddch(win,y+1, x+1, cdead);
+					//mvaddch(y+2, x, cdead);
+					
 			}
 	}	
 }
 
 void printBorder(int gen, int delay, const char * name, bool isPaused)
 {
-	mvprintw(0,20-(strlen(name)/2),"%s", name);
+	mvprintw(0,(COLS/2)-(strlen(name)/2),"%s", name);
 	mvprintw(1,0,"Delay(+/-):%5d", delay);
-	mvprintw(1,25,"Generation:%5d", gen);
+	mvprintw(1,COLS-strlen("Generation:     \0"),"Generation:%5d", gen);
 
+	char arrows[] 	= " Arrows: Scroll\0";
+	char play[] 	= "(P)lay \0";
+	char pause[] 	= "(P)ause\0";
+	char quit[] 	= "(Q)uit\0";
+	char step[] 	= "(S)tep\0";
 	
 	if(isPaused)
-		mvprintw(41,0,"(Q)uit    (P)lay     (S)tep     Arrows: Scroll");
+	{
+		mvprintw(LINES-1,0,quit);
+		mvprintw(LINES-1,(COLS/2)-strlen(play),play);
+		mvprintw(LINES-1,(COLS/2)+1,step);
+		mvprintw(LINES-1,COLS-strlen(arrows),arrows);
+	}
 	else
-		mvprintw(41,0,"(Q)uit    (P)ause     (S)tep     Arrows: Scroll");
+	{	
+		mvprintw(LINES-1,0,quit);
+		mvprintw(LINES-1,(COLS/2)-strlen(play),pause);
+		mvprintw(LINES-1,(COLS/2)+1,step);
+		mvprintw(LINES-1,COLS-strlen(arrows),arrows);
+	}
 }	
 
 
@@ -167,22 +174,30 @@ int main(int argc, char ** argv)
 	
 	
 	// ==== NCURSES BEGIN ==== //
-	
+	WINDOW *gamewin, *gamepad;
 	initscr();
 	cbreak();			
 	keypad(stdscr, TRUE);	
 	nodelay(stdscr, TRUE); //non-blocking 	
 	noecho();
 	
-	WINDOW * gamewin = draw_window(20, 40, 0, 2);
-	wrefresh(gamewin);
+
+	gamewin = newwin(LINES-3,COLS,2,0);
+	wborder(gamewin, '|', '|', '-', '-', '+', '+', '+', '+');
+
+	gamepad = newpad(yrange, xrange);
 	
 	
-	board.runSimulation(gen++);
+	
+	board.runSimulation(gen);
 	grid = board.getBoard();
 	std::string live(1, board.getliveChar());
 	std::string dead(1, board.getdeadChar());
-	displayGeneration(yrange, xrange, board.getliveChar(), board.getdeadChar(), grid);
+	
+	printBorder(gen, delay, board.getSimName().c_str(), true);
+	displayGeneration(gamepad,yrange, xrange, board.getliveChar(), board.getdeadChar(), grid);
+	updateResources(gamewin, gamepad, 0, 0, 3,1, LINES-3, COLS-1);
+	
 	
 	while(isRendering)
 	{
@@ -193,29 +208,33 @@ int main(int argc, char ** argv)
 			case 'p':
 				while(isPlaying)
 				{			
-					printBorder(gen, delay, board.getSimName().c_str(),!isPlaying);
+					printBorder(++gen, delay, board.getSimName().c_str(),!isPlaying);
 					ch = getch();
 					if(ch == 'p' || ch == 'P')
 						isPlaying = false;
-					board.runSimulation(gen++);
+					board.runSimulation(gen);
 					grid = board.getBoard();
-					displayGeneration(yrange, xrange, board.getliveChar(), board.getdeadChar(), grid);
+					displayGeneration(gamepad,yrange, xrange, board.getliveChar(), board.getdeadChar(), grid);
 					if(ch == '+')
 						delay++;
 					if(ch == '-')
 						delay--;	
 					if(delay < 0) delay = 0;
 					usleep(delay);
-					refresh();	
+	
+					updateResources(gamewin, gamepad, 0, 0, 3,1, LINES-3, COLS-1);
+	
 				}
 				isPlaying = true;
 				break;	
 				
 			case 's':
-				board.runSimulation(gen++);
+				board.runSimulation(++gen);
 				grid = board.getBoard();
-				displayGeneration(yrange, xrange, board.getliveChar(), board.getdeadChar(), grid);
-				refresh();	
+				displayGeneration(gamepad, yrange, xrange, board.getliveChar(), board.getdeadChar(), grid);
+				updateResources(gamewin, gamepad, 0, 0, 3,1, LINES-3, COLS-1);
+	
+		
 				break;	
 			case '+':
 				delay++;
@@ -234,6 +253,8 @@ int main(int argc, char ** argv)
 	
 		
 	}
+
+	//sleep(4);
 	endwin();
 	return 0;
 }
