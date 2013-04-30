@@ -117,11 +117,9 @@ int main(int argc, char ** argv)
 	gen = (gen > 0) ? gen : 0;
 	std::string file("test.aut");
 	
-	//Gameboard::Gameboard board((int)ceil(tx/2),(int)floor(tx/(-2)), (int)ceil(ty/2), (int)floor(ty/(-2)),wx, wy);
 	Gameboard::Gameboard board(xmax, xmin, ymax, ymin,wx, wy);
  	readFile(board, file);
 	board.runSimulation(gen);
-	
 	if(printAscii)
 		board.printAscii();
 	else

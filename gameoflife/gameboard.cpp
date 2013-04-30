@@ -57,6 +57,8 @@ void Gameboard::setGridDimensions( int  xmax, int   xmin, int   ymax,
 			ymin_dim = ymin;
 		}
 		
+		//alive = '1';
+		//dead = ' ';
 		setGridDimensions( xmax_dim, xmin_dim, ymax_dim, ymin_dim, winx, winy);
 }
 
@@ -135,6 +137,16 @@ void Gameboard::setCellState(std::vector<string> &coords)
 
 }
 
+void Gameboard::setSimName(std::string &sn)
+{
+	simname = sn;
+}
+
+void Gameboard::setSimChars( char living, char notliving)
+{
+	alive = living;
+	dead = notliving;
+}
 
 void Gameboard::generateBoard(int xrange, int yrange)
 {
@@ -231,6 +243,40 @@ int Gameboard::countAdjLiving(int px , int py)
 	return liveCount;
 }
 
+//Getters
+bool ** Gameboard::getBoard()
+{
+	return grid;
+}
+
+int Gameboard::getXrange()
+{
+	return xrange;
+}
+
+int Gameboard::getYrange()
+{
+	return yrange;
+}
+
+
+const char Gameboard::getliveChar()
+{
+	return alive;
+}
+
+const char Gameboard::getdeadChar()
+{
+	return dead;
+}
+
+const std::string Gameboard::getSimName()
+{
+	return simname;
+}
+
+
+//Printers
 void Gameboard::printAscii()
 {
 	/*
@@ -248,6 +294,7 @@ void Gameboard::printAscii()
 		cout<<endl;
 	}
 }
+
 void Gameboard::printToFile()
 {
 	/*

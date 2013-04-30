@@ -22,11 +22,15 @@
 
 class Gameboard
 {
+	char alive, dead;
 	int xmax_dim ,xmin_dim;
 	int ymax_dim ,ymin_dim; 
 	int winx_dim ,winy_dim;
-
 	int xrange, yrange;
+	
+	
+	
+	std::string simname;
 
 	bool ** grid; //malloc when needed;
 	bool ** output;
@@ -43,12 +47,26 @@ class Gameboard
 		bool setGridDimensions( int xmax, int xmin, int ymax, 
 			int ymin, int winx, int winy );
 		
+		void setSimName(std::string & simname);
 		void setCellState(int x, int y, bool isLiving);
 		void setCellState(std::vector<std::string> &coords);
 		void runSimulation(int numGenerations);
+		void setSimChars( char living, char notliving);
 		
+		
+		//Getters
+		bool ** getBoard();
+		int getXrange();
+		int getYrange();
+		const std::string getSimName();
+		const char getliveChar();
+		const char getdeadChar();
+
+		
+		//printing functions
 		void printAscii();
 		void printToFile();
+		
 		//User debug utilities 
 		std::string printDimensions();
 	

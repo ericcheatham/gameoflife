@@ -79,8 +79,12 @@ void readFile(Gameboard::Gameboard &g_ref , const std::string filename)
 	
 	int xrangemin = 0, xrangemax = 0;
 	int yrangemin = 0, yrangemax = 0;
+	
+	char alive = 33, dead = 32;
+	
 	bool wroteXR = false, wroteYR = false;
 	std::string y, x;
+	std::string simname;
 	std::vector<std::string> coordinates;
 	for(std::vector<string>::iterator iter = line_vec.begin();
 			iter != line_vec.end();
@@ -112,6 +116,24 @@ void readFile(Gameboard::Gameboard &g_ref , const std::string filename)
 				
 				wroteYR = true;
 			}
+			else if(!temp2.compare("Name"))
+			{
+				getline(ss,temp2);
+				std::replace(temp2.begin(), temp2.end(), '"', ' ');
+				simname =  trim(temp2);
+			}
+			
+			else if(!temp2.compare("Chars"))
+			{
+				getline(ss,temp2, ',');
+				dead = atoi(trim(temp2).c_str());
+				
+				getline(ss,temp2, ' ');
+				alive = atoi(trim(temp2).c_str());
+				
+				//cout<< alive << " " << dead << endl;
+			}
+			
 			else if(!temp2.compare("Initial"))
 			{
 				
@@ -158,5 +180,7 @@ void readFile(Gameboard::Gameboard &g_ref , const std::string filename)
 	file.close(); 
 	
 	g_ref.setGridDimensions( xrangemax, xrangemin, yrangemax, yrangemin, wroteXR, wroteYR, 5,6);
+	g_ref.setSimName(simname);
+	g_ref.setSimChars(alive, dead);
 	g_ref.setCellState(coordinates);
 }
