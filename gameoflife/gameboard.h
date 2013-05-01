@@ -1,10 +1,10 @@
-
 #ifndef INCLUDES
 #define INCLUDES
 
 //== C headers ==//
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <getopt.h>
 #include <math.h>
@@ -14,11 +14,11 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
+#include <algorithm>
+#include <cctype>
+#include <string>
+#include <algorithm>
 
-#endif
-
-#ifndef GOLBUILDER_H
-#define GOLBUILDER_H
 
 class Gameboard
 {
@@ -36,16 +36,13 @@ class Gameboard
 	bool ** output;
 	
 	public:
-		Gameboard();
-		Gameboard(int xmax_dim, int xmin_dim, int ymax_dim, int ymin_dim, 
-				int winx_dim, int winy_dim);
+		//Gameboard();
+		Gameboard(int xmax_dim, int xmin_dim, int ymax_dim, int ymin_dim,int winx_dim, int winy_dim);
 		~Gameboard();
 		
-		void setGridDimensions( int xmax, int xmin, int ymax, 
-			int ymin, bool wroteX, bool wroteY, int  winx, int  winy);
+		void setGridDimensions( int xmax, int xmin, int ymax, int ymin, bool wroteX, bool wroteY, int  winx, int  winy);
 			
-		bool setGridDimensions( int xmax, int xmin, int ymax, 
-			int ymin, int winx, int winy );
+		bool setGridDimensions( int xmax, int xmin, int ymax, int ymin, int winx, int winy );
 		
 		void setSimName(std::string & simname);
 		void setCellState(int x, int y, bool isLiving);
@@ -64,8 +61,8 @@ class Gameboard
 
 		
 		//printing functions
-		void printAscii();
-		void printToFile();
+		void printAscii(int wxl, int  wxh , int wyl  ,int wyh);
+		void printToFile(int wxl, int  wxh , int wyl  ,int wyh);
 		
 		//User debug utilities 
 		std::string printDimensions();
@@ -74,5 +71,5 @@ class Gameboard
 		void generateBoard(int xrange, int yrange);
 		int countAdjLiving(int px , int py);	
 };
-
 #endif
+

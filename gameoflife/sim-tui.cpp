@@ -16,7 +16,7 @@
 */
 
 
-#include "gameboard.h"
+//#include "gameboard.h"
 #include "golutilities.h"
 
 #include <ncurses.h>
@@ -71,6 +71,11 @@ void updateResources(WINDOW * window, WINDOW * pad, int pminrow, int pmincol, in
 {
 	
 	refresh();
+	wclear(window);
+	
+
+	//window= newwin(LINES-3,COLS,2,0);
+	wborder(window,'|', '|', '-', '-', '+', '+', '+', '+');
 	wrefresh(window);
 	prefresh(pad, pminrow,  pmincol, sminrow, smincol,  smaxrow,  smaxcol);
 
@@ -79,13 +84,7 @@ void updateResources(WINDOW * window, WINDOW * pad, int pminrow, int pmincol, in
 
 
 void displayGeneration(WINDOW * win, int yrange, int xrange, const char calive,  const char cdead, bool ** grid)
-{
-	char alive[2];
-	char dead[1];
-	alive[0] = calive;
-	alive[1] = '\0';
-	dead[0] = cdead;
-	
+{	
 	for(int y = 0; y < yrange; y++)
 	{
 			for(int x = 0; x < xrange; x++)
@@ -164,7 +163,7 @@ int main(int argc, char ** argv)
 
 	std::string file("test.aut");
 
-	Gameboard::Gameboard board(xmax, xmin, ymax, ymin, 
+	Gameboard board(xmax, xmin, ymax, ymin, 
 			xmax + abs(xmin)+1, ymax + abs(ymin)+1);		
  	readFile(board, file);
 	
@@ -185,7 +184,8 @@ int main(int argc, char ** argv)
 	gamewin = newwin(LINES-3,COLS,2,0);
 	wborder(gamewin, '|', '|', '-', '-', '+', '+', '+', '+');
 
-	gamepad = newpad(yrange, xrange);
+	gamepad = newpad(yrange+1, xrange-2);
+	int padx = 0, pady = 0;
 	
 	
 	
@@ -196,7 +196,7 @@ int main(int argc, char ** argv)
 	
 	printBorder(gen, delay, board.getSimName().c_str(), true);
 	displayGeneration(gamepad,yrange, xrange, board.getliveChar(), board.getdeadChar(), grid);
-	updateResources(gamewin, gamepad, 0, 0, 3,1, LINES-3, COLS-1);
+	updateResources(gamewin, gamepad, pady, padx, 3,1, LINES-3, COLS-2);
 	
 	
 	while(isRendering)
@@ -221,9 +221,7 @@ int main(int argc, char ** argv)
 						delay--;	
 					if(delay < 0) delay = 0;
 					usleep(delay);
-	
-					updateResources(gamewin, gamepad, 0, 0, 3,1, LINES-3, COLS-1);
-	
+					updateResources(gamewin, gamepad, pady, padx, 3,1, LINES-3, COLS-2);
 				}
 				isPlaying = true;
 				break;	
@@ -232,9 +230,7 @@ int main(int argc, char ** argv)
 				board.runSimulation(++gen);
 				grid = board.getBoard();
 				displayGeneration(gamepad, yrange, xrange, board.getliveChar(), board.getdeadChar(), grid);
-				updateResources(gamewin, gamepad, 0, 0, 3,1, LINES-3, COLS-1);
-	
-		
+				updateResources(gamewin, gamepad, pady, padx, 3,1, LINES-3, COLS-2);
 				break;	
 			case '+':
 				delay++;
@@ -242,6 +238,24 @@ int main(int argc, char ** argv)
 			case '-':
 				delay--;
 				if(delay < 0) delay = 0;
+				break;
+			case KEY_RIGHT:
+				if(padx-- < 0)	
+					padx =0;				
+				
+				updateResources(gamewin, gamepad, pady, padx, 3,1, LINES-3, COLS-2);
+				break;
+			case KEY_LEFT:
+				updateResources(gamewin, gamepad, pady, padx++, 3,1, LINES-3, COLS-2);
+				break;
+			case KEY_UP:
+				updateResources(gamewin, gamepad, pady++, padx, 3,1, LINES-3, COLS-2);
+				break;
+			case KEY_DOWN:
+				if(pady-- < 0)	
+					pady =0;
+				
+				updateResources(gamewin, gamepad, pady, padx, 3,1, LINES-3, COLS-2);
 				break;
 			case 'q':
 				isRendering = false;

@@ -1,11 +1,6 @@
-#include "gameboard.h"
 #include "golutilities.h"
 
-
-
 using namespace std;
-
-
 std::string trim(const std::string& str, const std::string& delim = " \t")
 {
 
@@ -20,7 +15,7 @@ std::string trim(const std::string& str, const std::string& delim = " \t")
 	return t_string;
 }
 
-void readFile(Gameboard::Gameboard &g_ref , const std::string filename) 
+void readFile(Gameboard &g_ref, const std::string &filename)
 {
 	/*
 	1) Open file
@@ -86,7 +81,7 @@ void readFile(Gameboard::Gameboard &g_ref , const std::string filename)
 	std::string y, x;
 	std::string simname;
 	std::vector<std::string> coordinates;
-	for(std::vector<string>::iterator iter = line_vec.begin();
+	for(std::vector<std::string>::iterator iter = line_vec.begin();
 			iter != line_vec.end();
 			iter++)
 	{

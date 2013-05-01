@@ -1,3 +1,4 @@
+/*
 #ifndef INCLUDES
 #define INCLUDES
 
@@ -6,6 +7,7 @@
 #include <strings.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <math.h>
 
 //== C++ headers ==//
 #include <iostream>
@@ -14,17 +16,15 @@
 #include <sstream>
 #include <algorithm>
 #include <cctype>
-#incldue <string>
+#include <string>
+#include <algorithm>
 
 
 #endif
-
-#ifndef GOLUTILITIES_H
-#define GOLUTILITIES_H
-
-#include <algorithm>
+*/
 #include "gameboard.h"
+
 std::string trim(const std::string& str, const std::string& delim);
 
-void readFile(Gameboard::Gameboard &g_ref , const std::string filename);
-#endif
+void readFile(Gameboard &g_ref, const std::string &filename);
+

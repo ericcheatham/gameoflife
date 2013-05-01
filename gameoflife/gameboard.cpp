@@ -9,17 +9,17 @@ Gameboard::Gameboard(int xmax, int xmin, int ymax, int ymin,  int winx, int winy
 {
 	setGridDimensions(xmax, xmin, ymax, ymin, winx, winy);
 }
-*/
+
 Gameboard::Gameboard()
 {
-	/*
-		This is the default constructor. It sets stuff to default. Shocking. 
-	*/
+	
+		//This is the default constructor. It sets stuff to default. Shocking. 
+	
 	xmax_dim = xmin_dim = 0;
 	ymax_dim = ymin_dim = 0;
 	winx_dim = winy_dim = 0;
 }
-
+*/
 Gameboard::Gameboard(int xmax, int xmin, int ymax, int ymin, 
 	int winx, int winy)
 {
@@ -277,14 +277,14 @@ const std::string Gameboard::getSimName()
 
 
 //Printers
-void Gameboard::printAscii()
+void Gameboard::printAscii(int wxl =0, int  wxh = 0, int wyl = 0 ,int wyh = 0)
 {
 	/*
 		1) Step through each row and print what we see
 	*/
-	for(int y = 0; y < yrange ; y++)
+	for(int y = 0; y < yrange && y >= wyl && y <= wyh ; y++)
 	{
-		for(int x = 0; x < xrange; x++)
+		for(int x = 0; x < xrange && y >= wxl && y <= wxh; x++)
 		{	
 			if(!grid[y][x])
 				cout<<"~";
@@ -295,7 +295,7 @@ void Gameboard::printAscii()
 	}
 }
 
-void Gameboard::printToFile()
+void Gameboard::printToFile(int wxl =0, int wxh = 0, int wyl = 0 ,int wyh = 0)
 {
 	/*
 		1) Open file stream
