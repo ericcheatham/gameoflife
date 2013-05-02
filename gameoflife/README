@@ -28,12 +28,17 @@ To package
 Working:
 	- showgen
 	- sim-tui
+		- might have a bug with a few steps
+	- Some of the alt rules
+	- Part of sim-gui
+	- Makefile 
+		
 
 Not working:
-	-sim-gui (20%)
+	-sim-gui (50%)
 	-anything else
+	-To view the (broken) output of the other rules, you have to uncomment a few lines in gameboard.cpp
 
 
 Final Remarks:
-	- This was the worst choice of a class in the last semester. Guess I;ll see you in 
-the fall.
+	- This was the worst choice of a class in the last semester. Guess I'll see you in the fall.

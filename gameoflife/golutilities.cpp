@@ -15,7 +15,7 @@ std::string trim(const std::string& str, const std::string& delim = " \t")
 	return t_string;
 }
 
-void readFile(Gameboard &g_ref, const std::string &filename)
+bool readFile(Gameboard &g_ref, const std::string &filename)
 {
 	/*
 	1) Open file
@@ -33,8 +33,7 @@ void readFile(Gameboard &g_ref, const std::string &filename)
 	std::string line, temp2;
 	std::vector<std::string> line_vec;
 	std::ifstream file( filename.c_str(), ifstream::in );
-	//char * split;
-	//LifeObject::LifeObject * newlife = new LifeObject;
+	
 
 	if( file ){	
 		while( std::getline( file, line ) )
@@ -69,7 +68,8 @@ void readFile(Gameboard &g_ref, const std::string &filename)
 		}
 	}
 	else{
-		cout << "File error. Please check your inputs...\n" <<endl;	
+		cout << "File error. Please check your inputs...\n" <<endl;
+		return false;
 	}	
 	
 	int xrangemin = 0, xrangemax = 0;
@@ -79,7 +79,7 @@ void readFile(Gameboard &g_ref, const std::string &filename)
 	
 	bool wroteXR = false, wroteYR = false;
 	std::string y, x;
-	std::string simname;
+	std::string simname, ruleset = "ConwaysLife";
 	std::vector<std::string> coordinates;
 	for(std::vector<std::string>::iterator iter = line_vec.begin();
 			iter != line_vec.end();
@@ -128,7 +128,12 @@ void readFile(Gameboard &g_ref, const std::string &filename)
 				
 				//cout<< alive << " " << dead << endl;
 			}
-			
+			else if(!temp2.compare("Rules"))
+			{
+				getline(ss, temp2);
+				std::replace(temp2.begin(), temp2.end(), '"', ' ');
+				ruleset =  trim(temp2);
+			}
 			else if(!temp2.compare("Initial"))
 			{
 				
@@ -176,6 +181,8 @@ void readFile(Gameboard &g_ref, const std::string &filename)
 	
 	g_ref.setGridDimensions( xrangemax, xrangemin, yrangemax, yrangemin, wroteXR, wroteYR, 5,6);
 	g_ref.setSimName(simname);
+	g_ref.setSimRule(ruleset);
 	g_ref.setSimChars(alive, dead);
 	g_ref.setCellState(coordinates);
+	return true;
 }

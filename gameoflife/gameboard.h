@@ -19,6 +19,7 @@
 #include <string>
 #include <algorithm>
 
+#include "gcell.h"
 
 class Gameboard
 {
@@ -30,10 +31,13 @@ class Gameboard
 	
 	
 	
-	std::string simname;
+	std::string simname, simrule;
 
 	bool ** grid; //malloc when needed;
 	bool ** output;
+
+	Gcell ** cgrid;
+	Gcell ** coutput;
 	
 	public:
 		//Gameboard();
@@ -45,17 +49,25 @@ class Gameboard
 		bool setGridDimensions( int xmax, int xmin, int ymax, int ymin, int winx, int winy );
 		
 		void setSimName(std::string & simname);
+		void setSimRule(std::string & simrule);
 		void setCellState(int x, int y, bool isLiving);
 		void setCellState(std::vector<std::string> &coords);
 		void runSimulation(int numGenerations);
 		void setSimChars( char living, char notliving);
 		
+		//simulations
+		void runSimulationAnt(int numGenerations);
+		void runSimulationBrian(int numGenerations);
+		void runSimulationConway(int numGenerations);
+		void runSimulationWire(int numGenerations);
+
 		
 		//Getters
 		bool ** getBoard();
 		int getXrange();
 		int getYrange();
 		const std::string getSimName();
+		const std::string getSimRule();
 		const char getliveChar();
 		const char getdeadChar();
 

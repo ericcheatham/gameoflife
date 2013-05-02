@@ -15,6 +15,8 @@ Yrange -20 20; #HERE'S. SOME. SHIT.
 Name "Random Junk";
 Chars 32,33;
 
+Rules ConwaysLife;
+
 Initial {
  Y = 2 : -1; # Sets (-1, 2) to "alive"
  Y=1: -2, -1; #Sets (-2, 1) and (-1, 1) to "alive"

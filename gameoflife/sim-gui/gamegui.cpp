@@ -1,17 +1,18 @@
-#include <QtQui>
-
+#include <QtGui>
+#include <iostream>
 #include "gamegui.h"
 
-GameGui::GameGui(QWidget *parent ) :QWidget(parent)
+GameGui::GameGui(QWidget *parent ) 
+	:QWidget(parent)
 {
 	setAttribute(Qt::WA_StaticContents);
 	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 	
 	curColor = Qt::black;
-	zoom = 10;
+	zoom = 8;
 	
 	image = QImage(16, 16, QImage::Format_ARGB32);
-	image.fill(qRgba(0, 0, 0, 0);	
+	image.fill(qRgba(0, 0, 0, 0));	
 }
 	
 QSize GameGui::sizeHint() const
@@ -54,11 +55,13 @@ void GameGui::paintEvent(QPaintEvent *event)
 	
 	if(zoom >=3)
 	{
-		painter.setPen(palette().forground().color());
+		painter.setPen(palette().foreground().color());
 		for( int i= 0; i <= image.width(); i++)
-			painter.drawLine(zoom * i, 0, zoom * i, zoom * image.height());	
+			painter.drawLine(zoom * i, 0, 
+					 zoom * i, zoom * image.height());	
 		for( int j= 0; j <= image.height(); j++)
-			painter.drawLine(0,zoom * j,zoom * zoom.width(), zoom *j);		
+			painter.drawLine(0, zoom * j,
+					 zoom * image.width(), zoom *j);		
 	}
 		
 	for( int i = 0; i <= image.width(); i++)
@@ -95,29 +98,27 @@ void GameGui::mousePressEvent(QMouseEvent * event)
 		
 void GameGui::mouseMoveEvent(QMouseEvent * event)
 {
-	if( event -> buttons() & Qt::LeftButton) 
+	/*if( event -> buttons() & Qt::LeftButton) 
 		setImagePixel(event -> pos(), true);
 	else if( event -> buttons() & Qt::RightButton) 
-		setImagePixel(event -> pos(), false);	
+		setImagePixel(event -> pos(), false);	*/
 }
 
-void GameGui::setImagePixel(const QPoints &pos, bool opaque)
+void GameGui::setImagePixel(const QPoint &pos, bool opaque)
 {
-	int x = pos.x();
-	int y = pos.y();
+	int x = pos.x()/zoom;
+	int y = pos.y()/zoom;
 	
-	if(image.rect().contains(i, j))
+	if(image.rect().contains(x, y))
 	{
 		if(opaque)
-			image.setPixel(i, j, penColor().rgba());
-		else
-			image.setPixel(i, j, qRgba(0,0,0,0));
-			
-		update(pixelRect(i, j));
+			image.setPixel(x, y, penColor().rgba());
+		//else
+		//	image.setPixel(x, y, qRgba(0,0,0,0));
+		
+		
+		update(pixelRect(x, y));
 	}
-	
-	
-	
 }		
 		
 		

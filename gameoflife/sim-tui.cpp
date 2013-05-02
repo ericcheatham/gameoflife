@@ -43,10 +43,6 @@ void printHelp()
 
 	cout << "The options specified by [ijlk]|tx|ty|wx|wy will default";
 	cout << " to the values defined in [filename]\n";
-	
-	
-
-
 }	
  
 void readArg(const char * optarg, int &min, int &max)
@@ -131,6 +127,18 @@ void printBorder(int gen, int delay, const char * name, bool isPaused)
 
 int main(int argc, char ** argv)
 {
+	/*
+		1) Read and construct stuff from file
+		2) Draw bordering stuff in NCURSES
+		3) Draw generation 0
+		4) Listen for key input
+			- Execute corresponding key command
+			- Refresh resources, lowest first
+				+ Border
+				+ Window
+				+ Pad
+		5) GOTO 04
+	*/
 	static struct option long_options[] = {
 		{"tx", 1, 0, 'i'},
 		{"ty", 1, 0, 'j'},
@@ -161,11 +169,16 @@ int main(int argc, char ** argv)
 		}
 	}
 
-	std::string file("test.aut");
+	std::string file;
+  	 if (optind < argc) {
+      		file = argv[optind];
+   	 }
+
 
 	Gameboard board(xmax, xmin, ymax, ymin, 
 			xmax + abs(xmin)+1, ymax + abs(ymin)+1);		
- 	readFile(board, file);
+ 	if(!readFile(board, file))
+ 		return -1;
 	
 	bool ** grid = board.getBoard();
 	int xrange = board.getXrange();

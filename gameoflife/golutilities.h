@@ -26,5 +26,5 @@
 
 std::string trim(const std::string& str, const std::string& delim);
 
-void readFile(Gameboard &g_ref, const std::string &filename);
+bool readFile(Gameboard &g_ref, const std::string &filename);
 

@@ -119,24 +119,48 @@ int main(int argc, char ** argv)
 
 
 	gen = (gen > 0) ? gen : 0;
-	std::string file("test.aut");
+	std::string file;
+  	 if (optind < argc) {
+      		file = argv[optind];
+   	 }
+
 	
 	Gameboard board(xmax, xmin, ymax, ymin,wx, wy);
- 	readFile(board, file);
+ 	if(!readFile(board, file))
+ 		return -1;
+	
 	board.runSimulation(gen);
+	
+
+	if(!board.getSimRule().compare("ConwaysLife"));
+	//	board.runSimulationConway(gen);
+	else if(!board.getSimRule().compare("BriansBrain"));
+	//	board.runSimulationBrian(gen); 
+	else if(!board.getSimRule().compare("WireWorld"));
+	//	board.runSimulationWire(gen);
+	else if(!board.getSimRule().compare("LangtonsAnt"));
+	//	board.runSimulationAnt(gen);
+	else
+	{
+		cout<<"Invalid simulation rule:" <<board.getSimRule()<<endl;
+		return -1;
+	}
+
+	//cout<<board.getSimRule()<<endl;
 
 	//wx = (useX) ? board.getXrange() : (abs(wxl) + wxh + 1);
 	//wy = (useY) ? board.getYrange() : (abs(wyl) + wyh + 1);
 	if(useX)
 	{
-		wxl = xmin;
-		wxh = xmax;
+		wxl = -(int) floor(board.getXrange()/2.0);
+		wxh = (int) floor(board.getXrange()/2.0);
 	}
 	if(useY)
 	{
-		wyl = ymin; 
-		wyh = ymax;
+		wyl = -(int) floor(board.getYrange()/2.0); 
+		wyh = (int) floor(board.getYrange()/2.0);
 	}
+	//cout<<wyl;
 
 	if(printAscii)	
 		board.printAscii(wxl , wxh,  wyl  , wyh );

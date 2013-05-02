@@ -29,6 +29,8 @@
 #include <QString>
 #include <QRect>
 
+#include "gamegui.h"
+
 using namespace std;
 
 
@@ -52,9 +54,6 @@ void printHelp()
 	cout << "The options specified by [ijlk]|tx|ty|wx|wy will default";
 	cout << " to the values defined in [filename]\n";
 	
-	
-
-
 }	
  
 void readArg(const char * optarg, int &min, int &max)
@@ -148,6 +147,11 @@ int main(int argc, char ** argv)
 	
 	// === QT === //
 	QApplication app(argc, argv);
+	GameGui window;
+	
+	//window.resize(40, 40);
+	window.show();
+	/*
 	QGraphicsScene scene ( QRect( 0, 0, xrange*10, yrange*10) );
 	
 	while(gen < 12)
@@ -169,7 +173,7 @@ int main(int argc, char ** argv)
 	//QRect rect;
 	//rect.setRect(0,0,5,5);
 	//gamewin.show();
-
+*/
 
 	return app.exec();
 }
