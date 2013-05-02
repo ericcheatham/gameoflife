@@ -1,0 +1,39 @@
+Computer Science 229
+
+Conway's Game of Life
+
+Files Contained:
+	gameboard.cpp  - Gameboard class
+	gameboard.h
+	golutilities.cpp - file reading utilities
+	golutilities.h
+	Makefile
+	README - This file
+	showgen.cpp - single gen printer
+	sim-gui/.cpp - attempt at GUI
+	sim-tui.cpp - NCURSES based TUI
+	test.aut - a test file
+
+
+To build everything:
+	make 
+
+To clean up
+	make clean
+
+To package 
+	make package
+
+
+Working:
+	- showgen
+	- sim-tui
+
+Not working:
+	-sim-gui (20%)
+	-anything else
+
+
+Final Remarks:
+	- This was the worst choice of a class in the last semester. Guess I;ll see you in 
+the fall.
